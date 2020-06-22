@@ -1,27 +1,33 @@
-import { fromEvent, range } from "rxjs";
-import{map, mapTo, pluck} from 'rxjs/operators'
+import {from, range} from 'rxjs';
 
-/* 
-range(1,5).pipe(
-    map<number,string>(val =>(val*10).toString())
-).subscribe( console.log); 
-*/
+import { filter } from 'rxjs/operators';
 
-const keyup$ = fromEvent<KeyboardEvent>(document, 'keyup');
+range(1,10).pipe(
+    filter((val, i) =>  {
+        console.log('index', i);
+        return val % 2 === 1;
+    })
+)//.subscribe(console.log);
 
-const keyupCode$ = keyup$.pipe(
-    map(event => event.code)
-);
+interface Personaje{
+    tipo: string;
+    nombre: string;
+}
+const personajes: Personaje[] = [
+    {
+        tipo: 'heroe',
+        nombre: 'Batman'
+    },
+    {
+        tipo: 'heroe',
+        nombre: 'Robin'
+    },
+    {
+        tipo: 'villano',
+        nombre: 'Joker'
+    }
+]
 
-const keyupMapTo$ = keyup$.pipe(
-    mapTo('tecla presionada')
-);
-
-const keyupPluck$ = keyup$.pipe(
-    pluck('target','baseURI')
-);
-
-keyup$.subscribe(console.log);
-keyupCode$.subscribe(code => console.log('map', code));
-keyupPluck$.subscribe(code => console.log('pluck',code));
-keyupMapTo$.subscribe(code => console.log('mapTo',code));
+from( personajes).pipe(
+    filter( p => p.tipo === 'heroe')
+).subscribe(console.log);
